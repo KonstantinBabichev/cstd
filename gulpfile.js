@@ -8,6 +8,9 @@ var reactify = require('reactify');
 var streamify = require('gulp-streamify');
 var babel = require("gulp-babel");
 
+var nodemon = require("gulp-nodemon");
+var livereload = require('gulp-livereload');
+
 var babelify = require('babelify');
 
 var path = {
@@ -26,24 +29,27 @@ gulp.task('copy', function () {
 });
 
 gulp.task('watch', function () {
-  gulp.watch(path.HTML, ['copy']);
-
   var watcher = watchify(browserify({
     entries: [path.ENTRY_POINT],
     debug: true,
     cache: {}, packageCache: {}, fullPaths: true
   }));
 
-  return watcher.on('update', function () {
+  return watcher
+  .on('update', function () {
     console.log('Updated');
+
     watcher
         .bundle()
         .pipe(source(path.OUT))
-        .pipe(gulp.dest(path.DEST_SRC));
+        .pipe(gulp.dest(path.DEST_SRC))
+        .pipe(livereload());
+  }).on('bytes', function (bytes) {
+    console.log('bytes');
   })
-      .on('error', function (err) {
-        console.log('error');
-      })
+  .on('error', function (err) {
+    console.log('error');
+  })
       .transform(babelify)
       .bundle()
       .pipe(source(path.OUT))
@@ -68,6 +74,32 @@ gulp.task('replaceHTML', function () {
         'js': 'build/' + path.MINIFIED_OUT
       }))
       .pipe(gulp.dest(path.DEST));
+});
+
+gulp.task('watch-server', function () {
+  livereload({
+    start:true,
+    port:34322
+  });
+
+  nodemon({
+    script: 'server.js',
+    ext: 'jsx',
+    ignore: ['app-fe.js', 'bin/**/*', 'public/**/*', 'node_modules/**/*.js'],
+    env: {'NODE_ENV': 'development'}
+  })
+  .on('restart', function () {
+    console.log('server restarted');
+
+    gulp.src('bundle.js')
+        .pipe(livereload());
+  })
+  .on('start', function () {
+    console.log('server started');
+  })
+  .on('crash', function () {
+    console.log('server crashed');
+  })
 });
 
 gulp.task('production', ['replaceHTML', 'build']);

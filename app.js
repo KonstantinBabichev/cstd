@@ -18,7 +18,7 @@ app.engine('handlebars', hbs.engine);
 app.set('view engine', 'handlebars');
 
 // Connect to our mongo database
-mongoose.connect('mongodb://localhost/cstd');
+//mongoose.connect('mongodb://localhost/cstd');
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
@@ -26,11 +26,14 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(cookieParser());
-app.use(require('node-compass')({mode: 'expanded'}));
+//app.use(require('node-compass')({mode: 'expanded'}));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/', routes.index);
+
 app.get('/article/:id', routes.article);
+app.get('/api/article/:id', routes.articleApi);
+
 app.get('/save', routes.save);
 app.use('/users', users);
 

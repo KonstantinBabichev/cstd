@@ -62,6 +62,15 @@ gulp.task('watch-client', function () {
       .on('error', function (err) {
         console.log('error');
       })
+      .on('bytes', function (err) {
+        console.log('bytes');
+      })
+      .on('time', function (time) {
+        console.log('time ' + time);
+      })
+      .on('log', function (err) {
+        console.log('log');
+      })
       .transform(babelify)
       .bundle()
       .pipe(source(path.OUT))
@@ -74,8 +83,14 @@ gulp.task('watch-client', function () {
 gulp.task('watch-server', function () {
   nodemon({
     script: 'server.js',
-    ext: 'jsx',
-    ignore: ['app-fe.js', 'bin/**/*', 'public/**/*', 'node_modules/**/*.js'],
+    ext: 'js',
+    ignore: [
+        'node_modules/**/*.js',
+        'bin/**/*',
+        'public/**/*',
+        'app-fe.js',
+        'componets/**/*.js' // TODO : remove when express restart will became faster
+    ],
     env: {'NODE_ENV': 'development'}
   })
       .on('restart', function () {

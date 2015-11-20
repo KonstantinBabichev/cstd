@@ -1,29 +1,51 @@
 var React = require('react');
+var router = require('react-router');
+var Link = router.Link;
 
-var HelloMessage = React.createClass({
-  handleClick: function () {
-    console.log('You clicked!');
-  },
+var ArticlePreview = React.createClass({
+    handleClick: function () {
+        console.log('You clicked!');
+    },
 
-  render: function () {
-    var self = this,
-        articles = this.props.articles;
+    render: function () {
+        console.log('articlePreview ==== ');
+        var self = this,
+            articles = this.props.articles;
 
-    articles = articles.map(function (article, i) {
-      var href = "/article/" + article._id;
-      return <li key={i}>
-        <a href={href} className="article" onClick={self.handleClick}>
-          <h3>{article.title}</h3>
-          <p>{article.description}</p>
-        </a>
-      </li>;
-    });
+        return <ul>
+            {articles.map(function (article, i) {
+                var href = "/article/" + article._id;
+                return <li key={i}>
+                    <Link to={href}>
+                        <h3>{article.title}</h3>
+                        <p>{article.description}</p>
+                    </Link>
+                </li>;
+            })}
+        </ul>
+    }
+});
 
-    return <ul>
-      {articles}
-    </ul>
-  }
+var ArticleFull = React.createClass({
+    handleClick: function () {
+        console.log('You clicked!');
+    },
+
+    render: function () {
+        console.log('articleFull ==== ');
+        var self = this,
+            article = this.props.article;
+
+        return <div>
+            <a className="article" onClick={self.handleClick}>
+                <span className="title">Full view</span>
+                <h1>{article.title}</h1>
+                <p>{article.description}</p>
+            </a>
+        </div>
+    }
 });
 
 
-exports.HelloMessage = HelloMessage;
+exports.ArticlePreview = ArticlePreview;
+exports.ArticleFull = ArticleFull;

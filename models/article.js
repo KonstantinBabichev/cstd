@@ -35,9 +35,7 @@ schema.statics.getArticles = function(id, callback) {
 
 schema.statics.getAll = function(cb) {
   return new Promise(function(resolve, reject) {
-
     resolve(_articles)
-
   });
 };
 
@@ -46,9 +44,8 @@ schema.statics.getById = function(id) {
 
     var article = _articles.find(function(element, index, array){
       return element._id == id
-    })
+    });
 
-    console.log(article);
     resolve(article);
   });
 };

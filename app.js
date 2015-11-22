@@ -8,7 +8,9 @@ import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
 
 import routes from './routes/index';
+import articles from './routes/articles';
 import users from './routes/users';
+import api from './routes/api';
 
 var app = express();
 
@@ -29,13 +31,123 @@ app.use(cookieParser());
 //app.use(require('node-compass')({mode: 'expanded'}));
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.get('/', routes.index);
+//app.get('/', routes.index);
 
-app.get('/article/:id', routes.article);
-app.get('/api/article/:id', routes.articleApi);
+import React from 'react';
+import ReactDOM from 'react-dom/server';
+import { RoutingContext, match } from 'react-router';
+import reactRoutes from './shared/router.js'
+
+function reactRouterMapping (location, next, cb) {
+  match({ routes : reactRoutes, location: location  }, (error, redirectLocation, renderProps) => {
+    if (typeof error == "undefined") return next();
+    cb(error, redirectLocation, renderProps);
+  })
+}
+
+app.use('/api', api);
+app.use('/articles', articles);
+
+app.use(function(req, res, next) {
+  console.log('=========== ' + req.url + ' ===========');
+  reactRouterMapping(req.url, next, function(error, redirectLocation, renderProps){
+
+    var articles = require('./models/article');
+
+    console.log('==========');
+    console.log(52);
+    console.log('==========');
+
+    articles
+        .getAll()
+        .then(function (articles) {
+          renderProps.params.articles = articles;
+
+          console.log('==========');
+          console.log(71);
+          console.log('==========');
+
+
+          var articlesHTML = ReactDOM.renderToString(<RoutingContext {...renderProps} />);
+
+          console.log(articlesHTML);
+          res.render('index', {
+            markup: articlesHTML,
+            title: 'Case Studies Database',
+            state: JSON.stringify(articles)
+          });
+        });
+  });
+
+  //match({ routes : reactRoutes, location: location  }, (error, redirectLocation, renderProps) => {
+  //
+  //})
+});
+
+
+app.use('/users', users);
+
+/*
+app.get('/', function (req, res) {
+  match({ routes : reactRoutes, location: req.url }, (error, redirectLocation, renderProps) => {
+    var articles = require('./models/article');
+
+    console.log('==========');
+    console.log(error);
+    console.log('==========');
+    console.log('==========');
+    console.log(redirectLocation);
+    console.log('==========');
+    console.log('==========');
+    console.log(renderProps);
+    console.log('==========');
+
+    articles
+        .getAll()
+        .then(function (articles) {
+          renderProps.params.articles = articles;
+
+          var articlesHTML = ReactDOM.renderToString(<RoutingContext {...renderProps} />);
+
+          console.log(articlesHTML);
+          res.render('index', {
+            markup: articlesHTML,
+            title: 'Case Studies Database',
+            state: JSON.stringify(articles)
+          });
+        });
+  })
+});
+
+app.get('/article/:id', function (req, res) {
+  match({ routes : reactRoutes, location: req.url }, (error, redirectLocation, renderProps) => {
+    var articles = require('./models/article');
+
+    articles
+        .getById(req.params.id)
+        .then(function (articles) {
+          console.log('/article/:id');
+          console.log(articles);
+          renderProps.params.articles = articles;
+
+          var articlesHTML = ReactDOM.renderToString(<RoutingContext {...renderProps} />);
+
+          console.log(articlesHTML);
+          res.render('index', {
+            markup: articlesHTML,
+            title: 'Case Studies Database',
+            state: JSON.stringify(articles)
+          });
+        });
+  })
+});
+*/
+
 
 app.get('/save', routes.save);
-app.use('/users', users);
+
+
+
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

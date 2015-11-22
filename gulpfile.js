@@ -84,6 +84,9 @@ gulp.task('watch-server', function () {
   nodemon({
     script: 'server.js',
     ext: 'js',
+    execMap: {
+      js: "node --harmony --use_strict"
+    },
     ignore: [
         'node_modules/**/*.js',
         'bin/**/*',

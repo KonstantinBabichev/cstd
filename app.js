@@ -78,76 +78,12 @@ app.use(function(req, res, next) {
           });
         });
   });
-
-  //match({ routes : reactRoutes, location: location  }, (error, redirectLocation, renderProps) => {
-  //
-  //})
 });
 
 
 app.use('/users', users);
 
-/*
-app.get('/', function (req, res) {
-  match({ routes : reactRoutes, location: req.url }, (error, redirectLocation, renderProps) => {
-    var articles = require('./models/article');
-
-    console.log('==========');
-    console.log(error);
-    console.log('==========');
-    console.log('==========');
-    console.log(redirectLocation);
-    console.log('==========');
-    console.log('==========');
-    console.log(renderProps);
-    console.log('==========');
-
-    articles
-        .getAll()
-        .then(function (articles) {
-          renderProps.params.articles = articles;
-
-          var articlesHTML = ReactDOM.renderToString(<RoutingContext {...renderProps} />);
-
-          console.log(articlesHTML);
-          res.render('index', {
-            markup: articlesHTML,
-            title: 'Case Studies Database',
-            state: JSON.stringify(articles)
-          });
-        });
-  })
-});
-
-app.get('/article/:id', function (req, res) {
-  match({ routes : reactRoutes, location: req.url }, (error, redirectLocation, renderProps) => {
-    var articles = require('./models/article');
-
-    articles
-        .getById(req.params.id)
-        .then(function (articles) {
-          console.log('/article/:id');
-          console.log(articles);
-          renderProps.params.articles = articles;
-
-          var articlesHTML = ReactDOM.renderToString(<RoutingContext {...renderProps} />);
-
-          console.log(articlesHTML);
-          res.render('index', {
-            markup: articlesHTML,
-            title: 'Case Studies Database',
-            state: JSON.stringify(articles)
-          });
-        });
-  })
-});
-*/
-
-
 app.get('/save', routes.save);
-
-
-
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

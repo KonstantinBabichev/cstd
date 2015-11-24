@@ -1,6 +1,7 @@
 # CStD
 
-## Gulp watchers
+## Development steps:
 
-##### `gulp watch-server`
-##### `gulp watch-client`
+ * `npm install`
+ * `gulp watch-server` - starts Express server and nodemon over it
+ * `gulp watch-client` - starts watching over client-side files and builds resulting build.js
